@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "eamodio.gitlens",
+        "eg2.vscode-npm-script",
+        "christian-kohler.npm-intellisense",
+        "stylelint.vscode-stylelint",
+        "TabNine.tabnine-vscode",
+        "jpoissonnier.vscode-styled-components",
+        "dbaeumer.vscode-eslint",
+        "naumovs.color-highlight",
+        "streetsidesoftware.code-spell-checker",
+        "ms-vscode-remote.remote-wsl",
+        "dracula-theme.theme-dracula",
+        "pkief.material-icon-theme",
+        "davidanson.vscode-markdownlint",
+        "ms-vsliveshare.vsliveshare"
+    ]
+}
