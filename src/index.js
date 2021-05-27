@@ -1,21 +1,16 @@
 import { writeFile, readFileSync } from 'fs'
 
-const files = [
-    '23052021.txt.phps',
-    '26052021.txt.phps',
-    '24052021.txt.phps',
-    '25052021.txt.phps'
-]
-
-const pattern = 'Hora:Minuto:Segundo:pa:pb:pc:pt:qa:qb:qc:qt:sa:sb:sc:st:uarms:ubrms:ucrms:iarms:ibrms:icrms:itrms:pfa:pfb:pfc:pft:pga:pgb:pgc:freq:epa:epb:epc:ept:eqa:eqb:eqc:eqt:yuaub:yuauc:yubuc:tpsd'
-
 const getParams = pattern => {
     return pattern.split(':')
 }
 
 const readFile = fileName => {
     try {
-        const data = readFileSync(fileName, 'utf8')
+        const data = readFileSync(fileName, 'utf8', err => {
+            if (err) {
+                console.log(`Erro abrindo arquivo: ${err.message}`)
+            }
+        })
         return data.toString()
     } catch(err) {
         console.log(`Error: ${err.message}`)
@@ -50,21 +45,42 @@ const getFrames = (stringArray, params) => {
     return dataObjectArray
 }
 
-const storeData = data => {
-    writeFile('frames.txt', JSON.stringify(data), err => {
+const storeData = (data, fileName) => {
+    writeFile(fileName, JSON.stringify(data), err => {
         if (err) {
-            console.log(`Error: ${err.message}`)
+            console.log(`Erro salvando arquivo: ${err.message}`)
         } else {
             console.log('Convertido com sucesso')
         }
-        
     })
 }
 
 (() => {
-    const dataString = readFile(files[0])
-    const dataArray = splitData(dataString)
-    const cleanedDataArray = cleanStringArray(dataArray, '\r')
-    const frames = getFrames(cleanedDataArray, getParams(pattern))
-    storeData(frames)
+    try {
+        const { argv } = process
+        const fileName = argv[2]
+        const pattern = argv[3] ?? 'Hora:Minuto:Segundo:pa:pb:pc:pt:qa:qb:qc:qt:sa:sb:sc:st:uarms:ubrms:ucrms:iarms:ibrms:icrms:itrms:pfa:pfb:pfc:pft:pga:pgb:pgc:freq:epa:epb:epc:ept:eqa:eqb:eqc:eqt:yuaub:yuauc:yubuc:tpsd'
+        const saveAs = `Convertido em: ${
+            new Date().getDate()
+        }-${
+            new Date().getMonth() + 1
+        }-${
+            new Date().getFullYear()
+        }-${
+            new Date().getHours()
+        }-${
+            new Date().getMinutes()
+        }-${
+            new Date().getSeconds()
+        }.txt`
+
+        const dataString = readFile(fileName)
+        const dataArray = splitData(dataString)
+        const cleanedDataArray = cleanStringArray(dataArray, '\r')
+        const frames = getFrames(cleanedDataArray, getParams(pattern))
+
+        storeData(frames, saveAs)
+    } catch (err) {
+        console.log(`Erro: ${err.message}`)
+    }
 })()
