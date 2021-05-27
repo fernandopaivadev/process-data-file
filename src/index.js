@@ -1,4 +1,4 @@
-import { writeFile, readFileSync, write } from 'fs'
+import { writeFile, readFileSync } from 'fs'
 
 const files = [
     '23052021.txt.phps',
