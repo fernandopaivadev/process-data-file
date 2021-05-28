@@ -55,7 +55,26 @@ const storeData = (data, fileName) => {
     })
 }
 
-(() => {
+const insertTimestamp = frames =>
+    frames.map(frame => {
+        const { Hora, Minuto, Segundo } = frame
+        
+        const date = new Date()
+        date.setHours(Hora)
+        date.setMinutes(Minuto)
+        date.setSeconds(Segundo)
+
+        const timestamp = date.toISOString()
+
+        delete frame.Hora
+        delete frame.Minuto
+        delete frame.Segundo
+
+        frame.timestamp = timestamp
+        return frame
+    })
+
+;(() => {
     try {
         const { argv } = process
         const fileName = argv[2]
@@ -78,8 +97,10 @@ const storeData = (data, fileName) => {
         const dataArray = splitData(dataString)
         const cleanedDataArray = cleanStringArray(dataArray, '\r')
         const frames = getFrames(cleanedDataArray, getParams(pattern))
-
-        storeData(frames, saveAs)
+        const framesWithTimestamp = insertTimestamp(frames)
+        
+        storeData(framesWithTimestamp, saveAs)
+       
     } catch (err) {
         console.log(`Erro: ${err.message}`)
     }
