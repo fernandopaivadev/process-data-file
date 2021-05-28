@@ -55,15 +55,29 @@ const storeData = (data, fileName) => {
     })
 }
 
-const insertTimestamp = frames =>
+const insertTimestamp = (frames, dateString) =>
     frames.map(frame => {
         const { Hora, Minuto, Segundo } = frame
-        
+        const splitDate = dateString.split('')
         const date = new Date()
         date.setHours(Hora)
         date.setMinutes(Minuto)
         date.setSeconds(Segundo)
-
+        date.setDate(`${splitDate[0]}${splitDate[1]}`)
+        date.setMonth(`${splitDate[2]}${splitDate[3]}`)
+        date.setMonth(date.getMonth() - 1)
+        date.setFullYear(
+            `${
+                splitDate[4]
+            }${
+                splitDate[5]
+            }${
+                splitDate[6]
+            }${
+                splitDate[7]
+            }`
+        )
+        
         const timestamp = date.toISOString()
 
         delete frame.Hora
@@ -93,11 +107,13 @@ const insertTimestamp = frames =>
             new Date().getSeconds()
         }.txt`
 
+        const date = fileName.split('.')[0]
+
         const dataString = readFile(fileName)
         const dataArray = splitData(dataString)
         const cleanedDataArray = cleanStringArray(dataArray, '\r')
         const frames = getFrames(cleanedDataArray, getParams(pattern))
-        const framesWithTimestamp = insertTimestamp(frames)
+        const framesWithTimestamp = insertTimestamp(frames, date)
         
         storeData(framesWithTimestamp, saveAs)
        
